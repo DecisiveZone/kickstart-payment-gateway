@@ -1,0 +1,268 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background-color: #f4f4f4;
+}
+
+.main-wrapper {
+  max-width: 700px;
+  margin: 60px auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.tab-nav {
+  display: flex;
+  width: 100%;
+}
+
+.tab-nav button {
+  flex: 1;
+  padding: 14px;
+  background-color: #dce6f8;
+  border: none;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: default;
+  transition: background-color 0.3s ease;
+}
+
+.tab-nav button.active {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.tab-content {
+  padding: 30px 40px;
+  animation: fade 0.5s ease;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+label .required {
+  color: red;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.row > div {
+  flex: 1;
+}
+
+button.submit-btn {
+  background-color: #4a90e2;
+  color: white;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+button.submit-btn:hover {
+  background-color: #357ab8;
+}
+
+.copy-box {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.copy-box input {
+  flex: 1;
+}
+
+.copy-box button {
+  padding: 8px 12px;
+  background-color: #555;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.copy-box button:hover {
+  background-color: #444;
+}
+
+.error-msg {
+  font-size: 13px;
+  color: red;
+  margin-top: 5px;
+  font-style: italic;
+  opacity: 0;
+  max-height: 0;
+  transition: opacity 0.5s ease, max-height 0.5s ease, margin 0.5s ease;
+  overflow: hidden;
+}
+
+.error-show {
+  opacity: 1;
+  max-height: 40px;
+  margin-top: 5px;
+}
+
+.copied-msg {
+  font-size: 13px;
+  color: green;
+  margin-top: 5px;
+  display: none;
+  font-style: italic;
+}
+
+.back-link {
+  font-size: 14px;
+  color: #4a90e2;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.footer {
+  text-align: center;
+  font-size: 13px;
+  color: #646262;
+  margin: 60px auto 20px;
+  padding: 0 20px;
+}
+
+.footer img {
+  max-width: 120px;
+  margin: 0 auto 8px;
+  display: block;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.error-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.error-dialog-box {
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  animation: popupFade 0.3s ease-in-out;
+}
+
+@keyframes popupFade {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.error-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+  color: #d9534f;
+  font-weight: 700;
+}
+
+.error-message-text {
+  color: red;
+  font-weight: 600;
+  font-size: 16px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin-bottom: 20px;
+}
+
+.error-dialog-box button {
+  padding: 10px 20px;
+  border: none;
+  background: #4a90e2;
+  color: white;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .tab-content {
+    padding: 20px;
+  }
+
+  .row {
+    flex-direction: column;
+  }
+
+  .tab-nav button {
+    font-size: 14px;
+    padding: 12px 10px;
+  }
+
+  .copy-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .copy-box button {
+    width: 100%;
+  }
+}

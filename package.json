@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "name": "crypto-payment-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "node-fetch": "^3.2.0"
+  }
+}

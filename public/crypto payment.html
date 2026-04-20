@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Generate Quick Invoice</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="crypto.css" />
+  </head>
+  <body>
+    <div class="main-wrapper">
+      <div class="tab-nav">
+        <button id="tabBtn1" class="active">Quick Invoice Form</button>
+        <button id="tabBtn2" disabled>Generated Link</button>
+      </div>
+      <div class="tab-content" id="tab1">
+        <div style="text-align: center">
+          <img
+            src="https://kick-start.ae/wp-content/uploads/2023/12/kick-start-logo-2048x392.webp"
+            alt="Kickstart Logo"
+            style="max-width: 200px; margin-bottom: 10px"
+          />
+          <h2 style="margin: 10px 0 0">GENERATE A QUICK INVOICE</h2>
+          <p style="font-size: 14px; color: #666">
+            Generate a quick invoice and share the payment link.
+          </p>
+        </div>
+        <form id="paymentRequestForm" novalidate>
+          <label
+            >Which merchant should receive the payment?
+            <span class="required">*</span></label
+          >
+          <select id="merchant" required>
+            <option value="">Select Merchant</option>
+            <option value="kickstart" selected>
+              Kickstart - Payments - AED
+            </option>
+          </select>
+          <div id="merchantError" class="error-msg"></div>
+
+          <label
+            >Payer's Name (Individual or Company)
+            <span class="required">*</span></label
+          >
+          <input type="text" id="payerName" placeholder="John Doe" required />
+          <div id="payerNameError" class="error-msg"></div>
+
+          <label
+            >Invoice Reference (Order Id) <span class="required">*</span></label
+          >
+          <input type="text" id="invoiceRef" placeholder="KSGQ0001" required />
+          <div id="refError" class="error-msg"></div>
+
+          <div class="row">
+            <div>
+              <label>Currency</label>
+              <select id="currency">
+                <option value="AED" selected>AED</option>
+              </select>
+            </div>
+            <div>
+              <label>Invoice Amount <span class="required">*</span></label>
+              <input type="number" id="amount" required step="0.01" min="1" />
+              <div id="amountError" class="error-msg"></div>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn">
+            Generate a Payment URL
+          </button>
+        </form>
+      </div>
+
+      <div class="tab-content hidden" id="tab2">
+        <h3 style="text-align: center">Your Quick Invoice Link is Ready</h3>
+        <div class="copy-box">
+          <input type="text" id="generatedLink" readonly />
+          <button type="button" onclick="copyLink()">Copy</button>
+        </div>
+        <div class="copied-msg" id="copiedMsg">Link copied to clipboard!</div>
+        <p style="margin-top: 25px; text-align: left">
+          <a href="#" class="back-link" onclick="resetForm(); return false;"
+            >Create a new quick invoice</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <img
+        src="https://www.kindpng.com/picc/m/353-3532467_ccavenue-secure-payment-png-download-ccavenue-payment-gateway.png"
+        alt="Triple A Logo"
+      />
+      &copy; 2026 CC Avenue Payment & KickStart Global Gateway. All Rights Reserved.
+    </div>
+
+    <div id="errorDialog" class="error-dialog hidden">
+      <div class="error-dialog-box">
+        <div class="error-icon">!</div>
+        <h2>Quick Invoice Error</h2>
+        <p id="errorMessage" class="error-message-text"></p>
+        <button type="button" onclick="closeErrorDialog()">OK</button>
+      </div>
+    </div>
+
+    <script src="crypto.js"></script>
+  </body>
+</html>
