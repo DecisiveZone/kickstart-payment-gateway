@@ -29,8 +29,7 @@ function buildInvoicePayload({ payerName, reference, amount, currency }) {
     currency: currency.trim(),
     valid_for: 30,
     valid_type: "days",
-    amount: Number(amount).toFixed(2),
-    terms_and_conditions: "Full pay OR no service.",
+    amount: Number(amount).toFixed(2)
   };
 }
 
