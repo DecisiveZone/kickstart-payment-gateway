@@ -13,27 +13,30 @@
         <button id="tabBtn2" disabled>Generated Link</button>
       </div>
       <div class="tab-content" id="tab1">
-        <div style="text-align: center">
-          <img
-            src="https://kick-start.ae/wp-content/uploads/2023/12/kick-start-logo-2048x392.webp"
-            alt="Kickstart Logo"
-            style="max-width: 200px; margin-bottom: 10px"
-          />
-          <h2 style="margin: 10px 0 0">GENERATE A QUICK INVOICE</h2>
-          <p style="font-size: 14px; color: #666">
-            Generate a quick invoice and share the payment link.
-          </p>
+        <div class="hero">
+          <h2>GENERATE A QUICK INVOICE</h2>
+          <p>Generate a quick invoice and share the payment link.</p>
         </div>
         <form id="paymentRequestForm" novalidate>
+          <label
+            >As an employee, which organization do you belong to?
+            <span class="required">*</span></label
+          >
+          <select id="organization" required>
+            <option value="">Select Organization</option>
+            <option value="decisivezone">Decisive Zone</option>
+            <option value="firmz">Firmz</option>
+          </select>
+          <div id="organizationError" class="error-msg"></div>
+
           <label
             >Which merchant should receive the payment?
             <span class="required">*</span></label
           >
-          <select id="merchant" required>
-            <option value="">Select Merchant</option>
-            <option value="kickstart" selected>
-              Kickstart - Payments - AED
-            </option>
+          <select id="merchant" required disabled>
+            <option value="">Auto-selected from organization</option>
+            <option value="kickstart">Kickstart - Payments</option>
+            <option value="firmz">Firmz - Payments</option>
           </select>
           <div id="merchantError" class="error-msg"></div>
 
@@ -90,7 +93,7 @@
         src="https://www.kindpng.com/picc/m/353-3532467_ccavenue-secure-payment-png-download-ccavenue-payment-gateway.png"
         alt="Triple A Logo"
       />
-      &copy; 2026 CC Avenue Payment & KickStart Global Gateway. All Rights Reserved.
+      &copy; 2026 CC Avenue Payment Gateway. All Rights Reserved.
     </div>
 
     <div id="errorDialog" class="error-dialog hidden">

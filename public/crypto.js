@@ -3,6 +3,41 @@ const tab2 = document.getElementById("tab2");
 const btn1 = document.getElementById("tabBtn1");
 const btn2 = document.getElementById("tabBtn2");
 
+// Organization -> merchant mapping (merchant is auto-selected and read-only)
+const ORGANIZATIONS = {
+  decisivezone: { merchant: "kickstart", prefix: "KSGQ", theme: "" },
+  firmz: { merchant: "firmz", prefix: "FZQ", theme: "theme-firmz" },
+};
+const DEFAULT_PREFIX = "KSGQ";
+
+const organizationSelect = document.getElementById("organization");
+const merchantSelect = document.getElementById("merchant");
+const referenceInput = document.getElementById("invoiceRef");
+
+function getReferencePrefix() {
+  const config = ORGANIZATIONS[organizationSelect.value];
+  return config ? config.prefix : DEFAULT_PREFIX;
+}
+
+function applyOrganization() {
+  const config = ORGANIZATIONS[organizationSelect.value];
+
+  merchantSelect.value = config ? config.merchant : "";
+  referenceInput.placeholder = `${getReferencePrefix()}0001`;
+
+  document.body.classList.remove("theme-firmz");
+  if (config && config.theme) {
+    document.body.classList.add(config.theme);
+  }
+
+  if (config) {
+    hideError("organizationError");
+    hideError("merchantError");
+  }
+}
+
+organizationSelect.addEventListener("change", applyOrganization);
+
 function switchTab(tabNumber) {
   if (tabNumber === 1) {
     tab1.classList.remove("hidden");
@@ -62,11 +97,15 @@ async function copyLink() {
 
 function resetForm() {
   document.getElementById("paymentRequestForm").reset();
-  document.getElementById("merchant").value = "kickstart";
   document.getElementById("currency").value = "AED";
-  ["merchantError", "payerNameError", "refError", "amountError"].forEach(
-    hideError,
-  );
+  applyOrganization();
+  [
+    "organizationError",
+    "merchantError",
+    "payerNameError",
+    "refError",
+    "amountError",
+  ].forEach(hideError);
   document.getElementById("generatedLink").value = "";
   btn2.disabled = true;
   switchTab(1);
@@ -114,12 +153,19 @@ document
     event.preventDefault();
 
     let valid = true;
-    const merchant = document.getElementById("merchant");
+    const merchant = merchantSelect;
     const payerName = document.getElementById("payerName");
     const reference = document.getElementById("invoiceRef");
     const amountInput = document.getElementById("amount");
     const currency = document.getElementById("currency").value;
     const amount = parseFloat(amountInput.value);
+
+    if (organizationSelect.value === "") {
+      showError("organizationError", "Please select your organization");
+      valid = false;
+    } else {
+      hideError("organizationError");
+    }
 
     if (merchant.value === "") {
       showError("merchantError", "Please select a merchant");
@@ -135,14 +181,9 @@ document
       hideError("payerNameError");
     }
 
-    // if (!reference.value.trim()) {
-    //   showError("refError", "Invoice reference is required");
-    //   valid = false;
-    // } else {
-    //   hideError("refError");
-    // }
     const referenceValue = reference.value.trim();
-    const referencePattern = /^KSGQ\d+$/;
+    const prefix = getReferencePrefix();
+    const referencePattern = new RegExp(`^${prefix}\\d+$`);
 
     if (!referenceValue) {
       showError("refError", "Invoice reference is required");
@@ -150,7 +191,7 @@ document
     } else if (!referencePattern.test(referenceValue)) {
       showError(
         "refError",
-        "Reference must start with KSGQ followed by digits (e.g., KSGQ0001)",
+        `Reference must start with ${prefix} followed by digits (e.g., ${prefix}0001)`,
       );
       valid = false;
     } else {
@@ -168,11 +209,21 @@ document
       return;
     }
 
+    // Prevent double-clicks from creating duplicate invoices
+    const submitBtn = event.target.querySelector(".submit-btn");
+    if (submitBtn.disabled) {
+      return;
+    }
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Generating...";
+
     try {
       const response = await fetch("/generate-quick-invoice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          merchant: merchant.value,
           payerName: payerName.value,
           reference: reference.value,
           amount,
@@ -192,6 +243,9 @@ document
       showErrorDialog(getErrorMessage(result));
     } catch (error) {
       showErrorDialog(error.message || "Unexpected error");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
     }
   });
 

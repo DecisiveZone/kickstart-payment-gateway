@@ -21,6 +21,23 @@ app.get("/", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "crypto-payment.html"));
 });
 
+// Each merchant has its own CCAvenue credentials (from .env).
+// Kickstart falls back to the old ACCESS_CODE / WORKING_KEY names.
+const MERCHANTS = {
+  kickstart: {
+    label: "Kickstart - Payments",
+    referencePrefix: "KSGQ",
+    accessCode: process.env.KICKSTART_ACCESS_CODE || process.env.ACCESS_CODE,
+    workingKey: process.env.KICKSTART_WORKING_KEY || process.env.WORKING_KEY,
+  },
+  firmz: {
+    label: "Firmz - Payments",
+    referencePrefix: "FZQ",
+    accessCode: process.env.FIRMZ_ACCESS_CODE,
+    workingKey: process.env.FIRMZ_WORKING_KEY,
+  },
+};
+
 function buildInvoicePayload({ payerName, reference, amount, currency }) {
   return {
     customer_name: payerName.trim(),
@@ -33,13 +50,25 @@ function buildInvoicePayload({ payerName, reference, amount, currency }) {
   };
 }
 
-function getValidationError({ payerName, reference, amount, currency }) {
+function getValidationError(
+  { payerName, reference, amount, currency },
+  merchantConfig
+) {
+  if (!merchantConfig) {
+    return "Please select a valid merchant.";
+  }
+
   if (!payerName?.trim()) {
     return "Payer name is required.";
   }
 
   if (!reference?.trim()) {
     return "Invoice reference is required.";
+  }
+
+  const prefix = merchantConfig.referencePrefix;
+  if (!new RegExp(`^${prefix}\\d+$`).test(reference.trim())) {
+    return `Reference must start with ${prefix} followed by digits (e.g., ${prefix}0001).`;
   }
 
   if (!currency?.trim()) {
@@ -55,26 +84,35 @@ function getValidationError({ payerName, reference, amount, currency }) {
 
 app.post("/generate-quick-invoice", async (req, res) => {
   try {
-    const { payerName, reference, amount, currency } = req.body;
-    const validationError = getValidationError({
-      payerName,
-      reference,
-      amount,
-      currency,
-    });
+    const { merchant, payerName, reference, amount, currency } = req.body;
+    const merchantConfig = Object.prototype.hasOwnProperty.call(MERCHANTS, merchant)
+      ? MERCHANTS[merchant]
+      : null;
+    const validationError = getValidationError(
+      { payerName, reference, amount, currency },
+      merchantConfig
+    );
 
     if (validationError) {
       return res.status(400).json({ error: validationError });
     }
 
+    const { accessCode, workingKey } = merchantConfig;
+
+    if (!accessCode || !workingKey) {
+      return res.status(500).json({
+        error: `${merchantConfig.label} credentials are not configured on the server.`,
+      });
+    }
+
     const encryptedData = encryptPayload(
       buildInvoicePayload({ payerName, reference, amount, currency }),
-      process.env.WORKING_KEY
+      workingKey
     );
 
     const requestBody = new URLSearchParams({
       enc_request: encryptedData,
-      access_code: process.env.ACCESS_CODE,
+      access_code: accessCode,
       request_type: "JSON",
       command: "generateQuickInvoice",
       version: "1.1",
@@ -97,7 +135,7 @@ app.post("/generate-quick-invoice", async (req, res) => {
     if (status === "0" && encResponse) {
       const decryptedResponse = decryptResponse(
         encResponse,
-        process.env.WORKING_KEY
+        workingKey
       );
       const invoiceResponse = JSON.parse(decryptedResponse);
 

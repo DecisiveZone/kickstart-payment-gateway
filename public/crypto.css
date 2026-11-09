@@ -1,12 +1,31 @@
+/* Theme colors: default (Kickstart / Decisive Zone / no selection) */
+:root {
+  --primary: #4a90e2;
+  --primary-hover: #357ab8;
+  --tab-inactive: #dce6f8;
+}
+
+/* Theme colors when "Firmz" organization is selected */
+body.theme-firmz {
+  --primary: #3e006f;
+  --primary-hover: #2a004b;
+  --tab-inactive: #e6dcf0;
+}
+
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   background-color: #f4f4f4;
+  /* Keep the footer pinned near the bottom of the page on both tabs */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-wrapper {
+  width: 100%;
   max-width: 700px;
-  margin: 60px auto;
+  margin: 40px auto 30px;
   background: white;
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -21,7 +40,7 @@ body {
 .tab-nav button {
   flex: 1;
   padding: 14px;
-  background-color: #dce6f8;
+  background-color: var(--tab-inactive);
   border: none;
   font-weight: bold;
   font-size: 16px;
@@ -30,8 +49,22 @@ body {
 }
 
 .tab-nav button.active {
-  background-color: #4a90e2;
+  background-color: var(--primary);
   color: white;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.hero h2 {
+  margin: 10px 0 0;
+}
+
+.hero p {
+  font-size: 14px;
+  color: #666;
 }
 
 .tab-content {
@@ -73,6 +106,13 @@ textarea {
   box-sizing: border-box;
 }
 
+select:disabled {
+  background-color: #f0f0f0;
+  color: #000;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
 textarea {
   resize: vertical;
   min-height: 80px;
@@ -88,7 +128,7 @@ textarea {
 }
 
 button.submit-btn {
-  background-color: #4a90e2;
+  background-color: var(--primary);
   color: white;
   padding: 12px;
   width: 100%;
@@ -100,7 +140,12 @@ button.submit-btn {
 }
 
 button.submit-btn:hover {
-  background-color: #357ab8;
+  background-color: var(--primary-hover);
+}
+
+button.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .copy-box {
@@ -156,7 +201,7 @@ button.submit-btn:hover {
 
 .back-link {
   font-size: 14px;
-  color: #4a90e2;
+  color: var(--primary);
   text-decoration: none;
 }
 
@@ -168,8 +213,8 @@ button.submit-btn:hover {
   text-align: center;
   font-size: 13px;
   color: #646262;
-  margin: 60px auto 20px;
-  padding: 0 20px;
+  margin: auto 0 0;
+  padding: 10px 20px 24px;
 }
 
 .footer img {
@@ -236,7 +281,7 @@ button.submit-btn:hover {
 .error-dialog-box button {
   padding: 10px 20px;
   border: none;
-  background: #4a90e2;
+  background: var(--primary);
   color: white;
   font-size: 14px;
   border-radius: 5px;
@@ -244,6 +289,11 @@ button.submit-btn:hover {
 }
 
 @media (max-width: 600px) {
+  .main-wrapper {
+    width: auto;
+    margin: 20px 16px;
+  }
+
   .tab-content {
     padding: 20px;
   }
